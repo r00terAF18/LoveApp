@@ -17,12 +17,12 @@ while (!R.WindowShouldClose())
     R.BeginDrawing();
     R.ClearBackground(Color.SkyBlue);
 
-    if (R.IsKeyPressed(KeyboardKey.F))
-        enabledDrawFps = !enabledDrawFps;
-    
-    if (enabledDrawFps)
-        R.DrawText(R.GetFPS().ToString(), 0, 0, 14, Color.Black);
-    
+    // if (R.IsKeyPressed(KeyboardKey.F))
+    //     enabledDrawFps = !enabledDrawFps;
+    //
+    // if (enabledDrawFps)
+    //     R.DrawText(R.GetFPS().ToString(), 0, 0, 14, Color.Black);
+    //
     // R.DrawText(R.GetFrameTime().ToString(), 100, 0, 14, Color.Black);
     MouseTrail.UpdateAndDraw(R.GetMousePosition(), R.GetFrameTime());
     
