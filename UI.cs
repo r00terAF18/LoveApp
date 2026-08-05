@@ -5,9 +5,94 @@ using R = Raylib_cs.Raylib;
 
 namespace LoveApp;
 
-public class UI
+public abstract class UI
 {
-    private const string Question = "Would you go out on a date with me?";
+    public abstract string Name { get; }
+    public abstract void Draw();
+
+    protected static bool DrawColoredButton(
+        Rectangle bounds,
+        string text,
+        Color normal,
+        Color focused,
+        Color pressed,
+        int textSize = 24)
+    {
+        int previousNormal = RayGui.GuiGetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorNormal);
+        int previousFocused = RayGui.GuiGetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorFocused);
+        int previousPressed = RayGui.GuiGetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorPressed);
+        int previousTextSize = RayGui.GuiGetStyle(
+            GuiControl.Default,
+            GuiDefaultProperty.TextSize);
+
+        RayGui.GuiSetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorNormal,
+            R.ColorToInt(normal));
+        RayGui.GuiSetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorFocused,
+            R.ColorToInt(focused));
+        RayGui.GuiSetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorPressed,
+            R.ColorToInt(pressed));
+        RayGui.GuiSetStyle(
+            GuiControl.Default,
+            GuiDefaultProperty.TextSize,
+            textSize);
+
+        bool wasPressed = RayGui.GuiButton(bounds, text).HasFlag(GuiResult.Pressed);
+
+        RayGui.GuiSetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorNormal,
+            previousNormal);
+        RayGui.GuiSetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorFocused,
+            previousFocused);
+        RayGui.GuiSetStyle(
+            GuiControl.Button,
+            GuiControlProperty.BaseColorPressed,
+            previousPressed);
+        RayGui.GuiSetStyle(
+            GuiControl.Default,
+            GuiDefaultProperty.TextSize,
+            previousTextSize);
+
+        return wasPressed;
+    }
+
+    protected static void DrawCenteredText(string text, int y, int fontSize, Color color)
+    {
+        int width = R.MeasureText(text, fontSize);
+        R.DrawText(text, (R.GetScreenWidth() - width) / 2, y, fontSize, color);
+    }
+
+    protected static Rectangle DrawCard(float width, float height, float centerYOffset = -15f)
+    {
+        Rectangle card = new(
+            (R.GetScreenWidth() - width) / 2f,
+            (R.GetScreenHeight() - height) / 2f + centerYOffset,
+            width,
+            height);
+
+        R.DrawRectangleRounded(card, 0.12f, 12, new Color(255, 250, 252, 225));
+        R.DrawRectangleRoundedLines(card, 0.12f, 12, new Color(194, 76, 116, 180));
+        return card;
+    }
+}
+
+public sealed class DateQuestionUI : UI
+{
+    private const string Question = "Mohadeseh, would you go out on a date with me?";
     private const float ButtonGap = 28f;
     private const float ResizeFactor = 0.85f;
 
@@ -17,14 +102,16 @@ public class UI
     private float _noHeight = 56f;
     private bool _accepted;
 
-    public void Draw()
+    public override string Name => "The Important Question";
+
+    public override void Draw()
     {
         int screenWidth = R.GetScreenWidth();
         int screenHeight = R.GetScreenHeight();
 
         if (_accepted)
         {
-            DrawCenteredText("It's a date! <3", screenHeight / 2 - 24, 40, Color.Maroon);
+            DrawCenteredText("It's a date, Mohadeseh! <3", screenHeight / 2 - 24, 40, Color.Maroon);
             return;
         }
 
@@ -79,70 +166,5 @@ public class UI
         float growFactor = 2f - ResizeFactor;
         _yesWidth = Math.Min(screenWidth * 0.55f, _yesWidth * growFactor);
         _yesHeight = Math.Min(screenHeight * 0.25f, _yesHeight * growFactor);
-    }
-
-    private static bool DrawColoredButton(
-        Rectangle bounds,
-        string text,
-        Color normal,
-        Color focused,
-        Color pressed)
-    {
-        int previousNormal = RayGui.GuiGetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorNormal);
-        int previousFocused = RayGui.GuiGetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorFocused);
-        int previousPressed = RayGui.GuiGetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorPressed);
-        int previousTextSize = RayGui.GuiGetStyle(
-            GuiControl.Default,
-            GuiDefaultProperty.TextSize);
-
-        RayGui.GuiSetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorNormal,
-            R.ColorToInt(normal));
-        RayGui.GuiSetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorFocused,
-            R.ColorToInt(focused));
-        RayGui.GuiSetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorPressed,
-            R.ColorToInt(pressed));
-        RayGui.GuiSetStyle(
-            GuiControl.Default,
-            GuiDefaultProperty.TextSize,
-            24);
-
-        bool wasPressed = RayGui.GuiButton(bounds, text).HasFlag(GuiResult.Pressed);
-
-        RayGui.GuiSetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorNormal,
-            previousNormal);
-        RayGui.GuiSetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorFocused,
-            previousFocused);
-        RayGui.GuiSetStyle(
-            GuiControl.Button,
-            GuiControlProperty.BaseColorPressed,
-            previousPressed);
-        RayGui.GuiSetStyle(
-            GuiControl.Default,
-            GuiDefaultProperty.TextSize,
-            previousTextSize);
-
-        return wasPressed;
-    }
-
-    private static void DrawCenteredText(string text, int y, int fontSize, Color color)
-    {
-        int width = R.MeasureText(text, fontSize);
-        R.DrawText(text, (R.GetScreenWidth() - width) / 2, y, fontSize, color);
     }
 }
