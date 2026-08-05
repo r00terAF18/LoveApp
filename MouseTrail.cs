@@ -13,6 +13,14 @@ public static class MouseTrail
 
     private static readonly List<Heart> Hearts = [];
     private static readonly Random Random = new();
+    private static readonly Color[] BurstColors =
+    [
+        Color.Red,
+        Color.Pink,
+        Color.Maroon,
+        Color.Gold,
+        Color.White
+    ];
 
     private static Vector2 _previousMousePosition;
     private static bool _hasPreviousPosition;
@@ -50,6 +58,25 @@ public static class MouseTrail
         UpdateHearts(dt);
         DrawHearts();
         _previousMousePosition = mousePosition;
+    }
+
+    public static void EmitHeartBurst(Vector2 position, int heartCount = 140)
+    {
+        for (int i = 0; i < heartCount; i++)
+        {
+            float angle = RandomRange(0f, MathF.Tau);
+            float speed = RandomRange(100f, 360f);
+            Vector2 direction = new(MathF.Cos(angle), MathF.Sin(angle));
+            Vector2 spawnOffset = direction * RandomRange(0f, 24f);
+
+            AddHeart(new Heart(
+                position + spawnOffset,
+                RandomRange(3f, 10f),
+                direction * speed,
+                RandomRange(1.2f, 2.8f),
+                RandomRange(110f, 210f),
+                BurstColors[Random.Next(BurstColors.Length)]));
+        }
     }
 
     private static void EmitTrail(Vector2 from, Vector2 to)

@@ -7,21 +7,36 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <RunAOTCompilation>true</RunAOTCompilation>
-        <PublishAot>true</PublishAot>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <!-- One Windows x64 executable containing the .NET runtime and native libraries. -->
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <SelfContained>true</SelfContained>
+        <PublishSingleFile>true</PublishSingleFile>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+
+        <!-- Keep the publish directory limited to the distributable executable. -->
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <AllowedReferenceRelatedFileExtensions></AllowedReferenceRelatedFileExtensions>
+
+        <!-- Native AOT is intentionally off: raylib and raygui are dynamic native libraries. -->
+        <PublishAot>false</PublishAot>
+        <PublishTrimmed>true</PublishTrimmed>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Raylib-cs" Version="8.0.0" />
-        <ProjectReference Include="..\raygui-cs\src\RayGuiSharp\RayGuiSharp.csproj" />
+        <PackageReference Include="Raylib-cs" Version="8.0.0"/>
+        <ProjectReference Include="..\raygui-cs\src\RayGuiSharp\RayGuiSharp.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\raygui-cs\runtimes\win-x64\native\raygui.dll"
-              Link="raygui.dll"
-              CopyToOutputDirectory="PreserveNewest"
-              CopyToPublishDirectory="PreserveNewest" />
+        <Content Include="..\raygui-cs\runtimes\win-x64\native\raygui.dll"
+                 Link="raygui.dll"
+                 CopyToOutputDirectory="PreserveNewest"
+                 CopyToPublishDirectory="PreserveNewest"
+                 IncludeInSingleFile="true"/>
     </ItemGroup>
 
 </Project>

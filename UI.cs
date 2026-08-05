@@ -53,6 +53,10 @@ public class UI
                 new Color(39, 174, 96, 255),
                 new Color(30, 132, 73, 255)))
         {
+            Vector2 burstPosition = new(
+                yesBounds.X + yesBounds.Width / 2f,
+                yesBounds.Y + yesBounds.Height / 2f);
+            MouseTrail.EmitHeartBurst(burstPosition);
             _accepted = true;
         }
 
